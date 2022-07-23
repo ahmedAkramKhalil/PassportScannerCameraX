@@ -83,7 +83,6 @@ public class MRZInfoFragment extends Fragment {
             gender = view.findViewById(R.id.gender);
             expirationDate = view.findViewById(R.id.expiration_date);
             others = view.findViewById(R.id.others);
-
             name.setText(mrzInfo.surname);
             gName.setText(mrzInfo.givenNames);
             documentNumber.setText(mrzInfo.documentNumber);
@@ -93,11 +92,10 @@ public class MRZInfoFragment extends Fragment {
             gender.setText(mrzInfo.sex.name());
             expirationDate.setText(mrzInfo.expirationDate.toString());
             others.setText(mrzInfo.toString());
-
-
             documentCH.setChecked(validDocumentNumber);
             birthCH.setChecked(validDateOfBirth);
             expirationCH.setChecked(validExpirationDate);
+
         }
 
 

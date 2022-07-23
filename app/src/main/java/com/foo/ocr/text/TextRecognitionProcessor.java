@@ -335,8 +335,6 @@ public class TextRecognitionProcessor  {
     }
 
     public interface ResultListener {
-        void onSuccess(MRZInfo mrzInfo);
-        void onSuccess(MRZInfo mrzInfo,InputImage frameMetadata);
         void onSuccess(MrzRecord mrzInfo);
         void onError(Exception exp);
     }

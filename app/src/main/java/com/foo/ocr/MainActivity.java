@@ -154,7 +154,6 @@ public class MainActivity extends AppCompatActivity {
                     MrzRecord mrzInfo = (MrzRecord) data.getSerializableExtra(MRZ_RESULT);
                     Log.d("Scanned", "MRZ Result data  >>      >>>      >>  >> Getted");
                     if (mrzInfo != null) {
-
                         FragmentContainerView container = findViewById(R.id.fragment_container_view);
                         container.setVisibility(View.VISIBLE);
                         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();

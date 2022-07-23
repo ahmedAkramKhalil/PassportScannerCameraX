@@ -259,17 +259,6 @@ public class CaptureActivity2 extends AppCompatActivity implements TextRecogniti
 
     }
 
-    @Override
-    public void onSuccess(MRZInfo mrzInfo) {
-        Log.d("MRZ", "MRZ");
-
-    }
-
-    @Override
-    public void onSuccess(MRZInfo mrzInfo, InputImage frameMetadata) {
-        Log.d("MRZ", "MRZ");
-
-    }
 
     @Override
     public void onSuccess(MrzRecord mrzInfo) {

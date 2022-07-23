@@ -34,6 +34,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Environment;
 import android.os.Handler;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.Rational;
 import android.util.Size;
@@ -42,6 +43,7 @@ import android.view.Surface;
 import android.view.View;
 
 import androidx.camera.camera2.interop.Camera2CameraInfo;
+import androidx.camera.core.AspectRatio;
 import androidx.camera.core.Camera;
 import androidx.camera.core.CameraSelector;
 import androidx.camera.core.ImageAnalysis;
@@ -66,6 +68,11 @@ import androidx.lifecycle.LiveData;
 import com.foo.ocr.databinding.ActivityMainBinding;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.mlkit.vision.common.InputImage;
+import com.google.mlkit.vision.objects.DetectedObject;
+import com.google.mlkit.vision.objects.ObjectDetection;
+import com.google.mlkit.vision.objects.ObjectDetector;
+import com.google.mlkit.vision.objects.defaults.ObjectDetectorOptions;
+import com.google.mlkit.vision.objects.defaults.PredefinedCategory;
 import com.google.mlkit.vision.text.Text;
 import com.google.mlkit.vision.text.TextRecognition;
 import com.google.mlkit.vision.text.TextRecognizer;
@@ -99,21 +106,13 @@ public class CaptureActivity extends AppCompatActivity implements TextRecognitio
     PreviewView mPreviewView;
     ImageCapture imageCapture;
     private TextRecognitionProcessor frameProcessor;
-
-    View overlay;
-    ImageView captureImage;
-
-    static List<Scan> scans = new ArrayList<>();
-
+    Rect rect;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_capture);
         mPreviewView = binding.camera;
-//        overlay = binding.view;
-
-//        captureImage = binding.captured;
 
     }
 
@@ -123,17 +122,23 @@ public class CaptureActivity extends AppCompatActivity implements TextRecognitio
         finish();
     }
 
-    private Rect getRectOfView(View view) {
-        int[] l = new int[2];
-        view.getLocationOnScreen(l);
-        return new Rect(l[0], l[1], l[0] + view.getWidth(), l[1] + view.getHeight());
-    }
-
     @Override
     protected void onStart() {
         super.onStart();
         startCamera();
+    }
 
+
+    private Rect getViewRect(View view) {
+        int[] l = new int[2];
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            view.getLocationInWindow(l);
+        }
+        int x = l[0];
+        int y = l[1];
+        int w = view.getWidth();
+        int h = view.getHeight();
+        return new Rect(x, y, x + w, y + h);
     }
 
     private void startCamera() {
@@ -154,25 +159,24 @@ public class CaptureActivity extends AppCompatActivity implements TextRecognitio
         }, ContextCompat.getMainExecutor(this));
 
         frameProcessor = new TextRecognitionProcessor(this, DocType.PASSPORT, this);
-
-
     }
 
 
     void bindPreview(@NonNull ProcessCameraProvider cameraProvider) {
-        Preview preview = new Preview.Builder().build();
-
+        Preview preview = new Preview.Builder()
+                .setTargetAspectRatio(AspectRatio.RATIO_16_9)
+                .build();
         CameraSelector cameraSelector = new CameraSelector.Builder()
                 .requireLensFacing(CameraSelector.LENS_FACING_BACK)
                 .build();
-
         ImageAnalysis imageAnalysis =
                 new ImageAnalysis.Builder()
                         // enable the following line if RGBA output is needed.
 //                        .setOutputImageFormat(ImageAnalysis.O)
-//                        .setTargetResolution(new Size(640, 480))
+//                        .setTargetResolution(cameraSelector.)
                         .setTargetResolution(new Size(1280, 720))
 //                        .setTargetRotation(Surface.ROTATION_90)
+
 //                        .setImageQueueDepth(200)
                         .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
                         .build();
@@ -198,6 +202,7 @@ public class CaptureActivity extends AppCompatActivity implements TextRecognitio
 
         imageCapture = builder
                 .setTargetRotation(this.getWindowManager().getDefaultDisplay().getRotation())
+                .setTargetAspectRatio(AspectRatio.RATIO_16_9)
                 .build();
 
         preview.setSurfaceProvider(mPreviewView.createSurfaceProvider());
@@ -214,50 +219,62 @@ public class CaptureActivity extends AppCompatActivity implements TextRecognitio
 //           cameraProvider.bindToLifecycle(this, cameraSelector, useCaseGroup);
         Camera camera = cameraProvider.bindToLifecycle((LifecycleOwner) this, cameraSelector, preview, imageCapture, imageAnalysis);
         if (camera.getCameraInfo().hasFlashUnit())
-        camera.getCameraControl().enableTorch(true);
-//        Scan scan = new Scan();
-//        scan.startTime = System.currentTimeMillis();
-//        scans.add(scan);
-
-
+            camera.getCameraControl().enableTorch(true);
     }
 
 
-    void takePicture() {
+    void captureImage() {
         if (imageCapture != null) {
             imageCapture.takePicture(executor, new ImageCapture.OnImageCapturedCallback() {
                 @Override
                 public void onCaptureSuccess(@NonNull ImageProxy image) {
-//                Bitmap detectedImage =  imageProxyToBitmap(image);
                     ImageInfo imageInfo = image.getImageInfo();
+                    rect = getViewRect(binding.view);
 
-                    Bitmap bitmap = rotateBitmapIfNeeded(imageProxyToBitmap(image), imageInfo);
-                    Size size = new Size(binding.frame.getWidth(), binding.frame.getHeight());
-                    Rect rect = new Rect(binding.view.getLeft(), binding.view.getTop(), binding.view.getRight(), binding.view.getBottom());
-                    Bitmap bitmap1 = Image.cropImage(bitmap, size, rect);
-//                    Matrix m = getMappingMatrix(image,mPreviewView);
-//                    Log.d("LOOG", "MainActivity-Crop " + m.toString());
+                    // Do crop for overlay frame
+                    Bitmap bitmap = cropBitmapToAFrame(cropPreviewBitmapWidth(rotateBitmapIfNeeded(imageProxyToBitmap(image), imageInfo)), binding.frame, binding.view);
+
+                    // Do crop for object detected  frame
+//                    objectDetector(image);
+
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-//                           binding.captured.setImageBitmap(cropBitmapTAFrame(bitmap,binding.camera,binding.view));
-//                           binding.captured.setImageBitmap(cropView(bitmap,binding.frame,binding.view));
-                            binding.captured.setImageBitmap(bitmap1);
-//                           Glide.with(binding.captured).load(bitmap).into(binding.captured);
-
+                            binding.captured.setImageBitmap(bitmap);
                         }
                     });
-
-
                     super.onCaptureSuccess(image);
                 }
 
                 @Override
                 public void onError(@NonNull ImageCaptureException exception) {
                     super.onError(exception);
+                    // reload text detection proccess
                 }
             });
         }
+    }
+
+    Bitmap cropPreviewBitmapWidth(Bitmap previewBitmap) {
+        DisplayMetrics dm = getResources().getDisplayMetrics();
+        int deviceWidthPx = dm.widthPixels;
+        int deviceHeightPx = dm.heightPixels;
+        float cropHeightPx = 0f;
+        float cropWidthPx = 0f;
+        if (deviceHeightPx > deviceWidthPx) {
+            cropHeightPx = 1.0f * previewBitmap.getHeight();
+            cropWidthPx = 1.0f * deviceWidthPx / deviceHeightPx * cropHeightPx;
+        } else {
+            cropWidthPx = 1.0f * previewBitmap.getWidth();
+            cropHeightPx = 1.0f * deviceHeightPx / deviceWidthPx * cropWidthPx;
+        }
+        float cx = previewBitmap.getWidth() / 2;
+        float cy = previewBitmap.getHeight();
+        float minimusPx = Math.min(cropHeightPx, cropWidthPx);
+        float left2 = cx - minimusPx / 2;
+        float top2 = cy - minimusPx / 2;
+        Bitmap croppedBitmap = Bitmap.createBitmap(previewBitmap, (int) left2, (int) 0, (int) minimusPx, (int) previewBitmap.getHeight());
+        return croppedBitmap;
     }
 
     private Bitmap rotateBitmapIfNeeded(Bitmap source, ImageInfo info) {
@@ -267,180 +284,76 @@ public class CaptureActivity extends AppCompatActivity implements TextRecognitio
         return Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(), mat, true);
     }
 
-    Bitmap cropBitmapTAFrame(Bitmap source, View frame, View cardPlaceHolder) {
-        float scaleX = source.getWidth() / (float) frame.getWidth();
-        float scaleY = source.getHeight() / (float) frame.getHeight();
+    void detectObjectInImage(ImageProxy imageProxy) {
+        ObjectDetectorOptions options =
+                new ObjectDetectorOptions.Builder()
+                        .setDetectorMode(ObjectDetectorOptions.SINGLE_IMAGE_MODE)
+//                        .enableClassification()  // Optional
+                        .build();
 
-        int x = (int) ((cardPlaceHolder.getLeft()) * scaleX);
-        int y = (int) ((cardPlaceHolder.getTop()) * scaleY);
+        ObjectDetector objectDetector = ObjectDetection.getClient(options);
+        @SuppressLint("UnsafeOptInUsageError") android.media.Image mediaImage = imageProxy.getImage();
+//            InputImage image =
+//                    InputImage.fromMediaImage(mediaImage, imageProxy.getImageInfo().getRotationDegrees());
+        InputImage inputImage =
+                InputImage.fromMediaImage(mediaImage, imageProxy.getImageInfo().getRotationDegrees());
+        objectDetector.process(inputImage).addOnSuccessListener(new OnSuccessListener<List<DetectedObject>>() {
+            @Override
+            public void onSuccess(List<DetectedObject> detectedObjects) {
+//                for (DetectedObject detectedObject : detectedObjects) {
+                Rect boundingBox = detectedObjects.get(0).getBoundingBox();
+                Bitmap bitmap = inputImage.getBitmapInternal();
+                Bitmap m = Image.cropImage(bitmap, new Size(bitmap.getWidth(), bitmap.getHeight()), boundingBox);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        binding.captured.setImageBitmap(m);
+//                           Glide.with(binding.captured).load(bitmap).into(binding.captured
+                    }
+                });
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
 
-        Log.v("MainActivity-Crop", "leftPos: " + cardPlaceHolder.getLeft() + " width: " + cardPlaceHolder.getWidth());
-        Log.d("LOOG", "MainActivity-Crop source " + source.getHeight() + " " + source.getWidth());
-        Log.d("LOOG", "MainActivity-Crop frame " + frame.getHeight() + " " + frame.getWidth());
-        Log.d("LOOG", "MainActivity-Crop cardPlaceHolder " + cardPlaceHolder.getHeight() + " " + cardPlaceHolder.getWidth());
-
-
-        int width = (int) (cardPlaceHolder.getWidth() * scaleX);
-        int height = (int) (cardPlaceHolder.getHeight() * scaleY);
-
-        return Bitmap.createBitmap(source, x, y, width, height);
+            }
+        });
 
     }
 
-    private Bitmap imageProxyToBitmap(ImageProxy image) {
+    Bitmap cropBitmapToAFrame(Bitmap source, View frame, View cardPlaceHolder) {
+        float scaleX = source.getWidth() / (float) frame.getWidth();
+        float scaleY = source.getHeight() / (float) frame.getHeight();
+        int x = (int) ((cardPlaceHolder.getLeft()) * scaleX);
+        int y = (int) ((cardPlaceHolder.getTop()) * scaleY);
+        int width = (int) (cardPlaceHolder.getWidth() * scaleX);
+        int height = (int) (cardPlaceHolder.getHeight() * scaleY);
+        return Bitmap.createBitmap(source, x, y, width, height);
+    }
 
+    private Bitmap imageProxyToBitmap(ImageProxy image) {
         ImageProxy.PlaneProxy planeProxy = image.getPlanes()[0];
         ByteBuffer buffer = planeProxy.getBuffer();
         byte[] bytes = new byte[buffer.remaining()];
         buffer.get(bytes);
-
         return BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-    }
-
-
-    private void getCroppedImage(ImageProxy imageProxy, Rect rect) {
-        ByteBuffer yByteBuffer = imageProxy.getPlanes()[0].getBuffer();
-        ByteBuffer yuByteBuffer = imageProxy.getPlanes()[2].getBuffer();
-
 
     }
 
-    @Override
-    public void onSuccess(MRZInfo mrzInfo) {
-        Log.d("MRZ", "MRZ");
-
-    }
-
-    @Override
-    public void onSuccess(MRZInfo mrzInfo, InputImage frameMetadata) {
-        Log.d("MRZ", "MRZ");
-
-    }
 
     @Override
     public void onSuccess(MrzRecord mrzInfo) {
         Intent returnIntent = new Intent();
         returnIntent.putExtra(MRZ_RESULT, mrzInfo);
         setResult(Activity.RESULT_OK, returnIntent);
-//        scans.get(scans.size()-1).endTime = System.currentTimeMillis();
-//        Log.d("Scanns","Scan + " + scans.toString()) ;
-//        Log.d("String", mrzInfo.toString());
-//        takePicture();
-        finish();
-
+        captureImage();
+//        finish();
     }
 
 
     @Override
     public void onError(Exception exp) {
         Log.d("MRZ", "onError");
-
     }
 
-
-    void setProcess() {
-//        Task<Text> results =
-//                recognizer.process(image)
-//                        .addOnSuccessListener(new OnSuccessListener<Text>() {
-//                            @Override
-//                            public void onSuccess(Text result) {
-//                                for (Text.TextBlock block : result.getTextBlocks()) {
-//                                    String blockText = block.getText();
-//                                    Log.d("LOOG"," " + blockText);
-//
-//                                    Point[] blockCornerPoints = block.getCornerPoints();
-//                                    Rect blockFrame = block.getBoundingBox();
-//                                    for (Text.Line line : block.getLines()) {
-//                                        String lineText = line.getText();
-//                                        Point[] lineCornerPoints = line.getCornerPoints();
-//                                        Rect lineFrame = line.getBoundingBox();
-//                                        for (Text.Element element : line.getElements()) {
-//                                            String elementText = element.getText();
-//                                            Point[] elementCornerPoints = element.getCornerPoints();
-//                                            Rect elementFrame = element.getBoundingBox();
-//
-//                                        }
-//                                    }
-//                                }
-//                                imageProxy.close();
-//
-//
-//
-//                            }
-//                        })
-//                        .addOnFailureListener(
-//                                new OnFailureListener() {
-//                                    @Override
-//                                    public void onFailure(@NonNull Exception e) {
-//                                        // Task failed with an exception
-//                                        // ...
-//                                        e.printStackTrace();
-//                                    }
-//                                });
-
-    }
-
-    Matrix getMappingMatrix(ImageProxy imageProxy, PreviewView previewView) {
-        Rect cropRect = imageProxy.getCropRect();
-        int rotationDegrees = imageProxy.getImageInfo().getRotationDegrees();
-        Matrix matrix = new Matrix();
-
-        // A float array of the source vertices (crop rect) in clockwise order.
-        float[] source = {
-                cropRect.left,
-                cropRect.top,
-                cropRect.right,
-                cropRect.top,
-                cropRect.right,
-                cropRect.bottom,
-                cropRect.left,
-                cropRect.bottom
-        };
-
-        // A float array of the destination vertices in clockwise order.
-        float[] destination = {
-                0f,
-                0f,
-                previewView.getWidth(),
-                0f,
-                previewView.getWidth(),
-                previewView.getHeight(),
-                0f,
-                previewView.getHeight()
-        };
-
-        // The destination vertexes need to be shifted based on rotation degrees.
-        // The rotation degree represents the clockwise rotation needed to correct
-        // the image.
-        // Each vertex is represented by 2 float numbers in the vertices array.
-        int vertexSize = 2;
-        // The destination needs to be shifted 1 vertex for every 90° rotation.
-        int shiftOffset = rotationDegrees / 90 * vertexSize;
-        float[] tempArray = destination.clone();
-        for (int toIndex = 0; toIndex < source.length; toIndex++) {
-            int fromIndex = (toIndex + shiftOffset) % source.length;
-            destination[toIndex] = tempArray[fromIndex];
-        }
-        matrix.setPolyToPoly(source, 0, destination, 0, 4);
-        return matrix;
-    }
-
-
-    private Bitmap cropView(Bitmap bitmap, View frame, View reference) {
-        int heightOriginal = frame.getHeight();
-        int widthOriginal = frame.getWidth();
-        int heightFrame = reference.getHeight();
-        int widthFrame = reference.getWidth();
-        int leftFrame = reference.getLeft();
-        int topFrame = reference.getTop();
-        int heightReal = bitmap.getHeight();
-        int widthReal = bitmap.getWidth();
-        int widthFinal = widthFrame * widthReal / widthOriginal;
-        int heightFinal = heightFrame * heightReal / heightOriginal;
-        int leftFinal = leftFrame * widthReal / widthOriginal;
-        int topFinal = topFrame * heightReal / heightOriginal;
-        return Bitmap.createBitmap(bitmap, leftFinal, topFinal, widthFinal, heightFinal);
-
-
-    }
 }
