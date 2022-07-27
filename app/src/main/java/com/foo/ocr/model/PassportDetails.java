@@ -5,9 +5,9 @@ import android.graphics.Bitmap;
 import com.foo.ocr.mrzdecoder.MrzRecord;
 
 public class PassportDetails {
-    MrzRecord mrzRecord;
-    Bitmap personalPicture;
-    Bitmap passportPhoto;
+    private  MrzRecord mrzRecord;
+    private Bitmap personalPicture;
+    private Bitmap passportPhoto;
 
     public PassportDetails(Bitmap personalPicture, Bitmap passportPhoto) {
         this.personalPicture = personalPicture;

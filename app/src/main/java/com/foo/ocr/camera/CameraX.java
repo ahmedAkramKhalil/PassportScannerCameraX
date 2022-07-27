@@ -26,7 +26,7 @@ import java.util.concurrent.Executor;
 public class CameraX {
     private Activity context;
     private VisionImageProcessor processor;
-    PreviewView previewView;
+    private PreviewView previewView;
 
     private static CameraX camera;
 
@@ -81,16 +81,16 @@ public class CameraX {
                 .requireLensFacing(CameraSelector.LENS_FACING_BACK)
                 .build();
 
-         /**  Image Analyzer use case  to analyze image stream from camera and pass to text processor */
+        /**  Image Analyzer use case  to analyze image stream from camera and pass to text processor */
         imageAnalysis =
                 new ImageAnalysis.Builder()
                         .setTargetResolution(new Size(1280, 720))
                         .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
                         .build();
-         /**  assign ImageAnalyzer class to Image Analyzer use case */
+        /**  assign ImageAnalyzer class to Image Analyzer use case */
         imageAnalysis.setAnalyzer(executor, new ImageAnalyzer(processor));
 
-         /**  Image capture use case with AspectRatio matches Camera Preview use case to process returned image correctly */
+        /**  Image capture use case with AspectRatio matches Camera Preview use case to process returned image correctly */
         ImageCapture.Builder builder = new ImageCapture.Builder();
         imageCapture = builder
                 .setTargetRotation(context.getWindowManager().getDefaultDisplay().getRotation())
@@ -99,10 +99,10 @@ public class CameraX {
 
         cameraPreview.setSurfaceProvider(previewView.createSurfaceProvider());
 
-         /**  Unbind all recent use cases */
+        /**  Unbind all recent use cases */
         cameraProvider.unbindAll();
         androidx.camera.core.Camera camera = cameraProvider.bindToLifecycle((LifecycleOwner) context, cameraSelector, cameraPreview, imageCapture, imageAnalysis);
-         /**  check availability of flash light and enable it  to avoid brightness related issues */
+        /**  check availability of flash light and enable it  to avoid brightness related issues */
         if (camera.getCameraInfo().hasFlashUnit())
             camera.getCameraControl().enableTorch(true);
 
@@ -129,8 +129,8 @@ public class CameraX {
     }
 
     /**
-     *  When LifecycleOwner is destroyed the CameraX Object should be assigned to null
-     *  to allow re-creation when new binding
+     * When LifecycleOwner is destroyed the CameraX Object should be assigned to null
+     * to allow re-creation when new binding
      */
     public void stopCamera() {
         camera = null;
@@ -138,6 +138,7 @@ public class CameraX {
 
     public interface ICaptureImageListener {
         void onCaptureSuccess(ImageProxy image);
+
         void onImageCapturingError(ImageCaptureException exception);
     }
 

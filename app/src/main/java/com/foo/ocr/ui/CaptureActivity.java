@@ -31,9 +31,9 @@ import io.reactivex.rxjava3.schedulers.Schedulers;
 public class CaptureActivity extends AppCompatActivity implements TextRecognitionProcessor.IMRZDetectorResultListener, CameraX.ICaptureImageListener {
 
     private ActivityCaptureBinding binding;
-    PreviewView mPreviewView;
+    private PreviewView mPreviewView;
     private TextRecognitionProcessor frameProcessor;
-    CameraX camera;
+    private CameraX camera;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -9,5 +9,4 @@ public class RxBus {
     public static BehaviorSubject<MrzRecord> getRecord() {
         return bs;
     }
-    private static final BehaviorSubject<Object> bus = BehaviorSubject.create();
 }

@@ -24,7 +24,7 @@ import io.reactivex.rxjava3.observers.DisposableObserver;
 
 public class MRZInfoFragment extends Fragment {
 
-    FragmentMrzInfoBinding binding;
+    private FragmentMrzInfoBinding binding;
     private static final String ARG_PARAM1 = "param1";
 
 

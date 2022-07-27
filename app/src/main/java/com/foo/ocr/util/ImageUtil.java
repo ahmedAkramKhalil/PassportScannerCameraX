@@ -22,7 +22,7 @@ public class ImageUtil {
      * This method not used because we matches the Aspect Ratio on CameraX preview and ImageCapture
      * If the Aspect Ratio on CameraX preview and ImageCapture this method should be used before cropping captured image
      */
-    int aspectRatio(int width, int height) {
+   public static int aspectRatio(int width, int height) {
         int previewRatio = Math.max(width, height) / Math.min(width, height);
         if (Math.abs(previewRatio - AspectRatio.RATIO_4_3) <= Math.abs(previewRatio - AspectRatio.RATIO_16_9)) {
             return AspectRatio.RATIO_4_3;
@@ -55,7 +55,6 @@ public class ImageUtil {
      */
     public static Bitmap cropImageWithBoundary(Bitmap fullImage, Size previewSize, Rect cardFinder, boolean higherBoundary) {
         Rect rect = new Rect((int) (cardFinder.left / 1.55), (int) (cardFinder.top / (higherBoundary ? 1.09 : 1.45)), (int) (cardFinder.right * 1.25), (int) (cardFinder.bottom * (higherBoundary ? 1.06 : 1.15)));
-
         cardFinder = rect;
         Rect scaledPreviewImage = scaleAndCenterWithin(previewSize, fullImage.getWidth(), fullImage.getHeight());
         float previewScale = (float) scaledPreviewImage.width() / previewSize.getWidth();
@@ -77,7 +76,7 @@ public class ImageUtil {
 
     }
 
-    static Rect scaleAndCenterWithin(Size containingSize, int width, int height) {
+    public static Rect scaleAndCenterWithin(Size containingSize, int width, int height) {
         float aspectRatio = (float) width / (float) height;
         /**
          * Since the preview image may be at a different resolution than the full image, scale the
@@ -97,7 +96,7 @@ public class ImageUtil {
     /**
      * Get the maximum aspectRation of containing area
      */
-    static Size maxAspectRatioInSize(Size area, Float aspectRatio) {
+    public static Size maxAspectRatioInSize(Size area, Float aspectRatio) {
         int width = area.getWidth();
         int height = Math.round(width / aspectRatio);
         Size s = null;

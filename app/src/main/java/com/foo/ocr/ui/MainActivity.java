@@ -34,11 +34,11 @@ import io.reactivex.rxjava3.observers.DisposableObserver;
 
 public class MainActivity extends AppCompatActivity {
 
-    ActivityMainBinding binding;
+    private  ActivityMainBinding binding;
     public static final String MRZ_RESULT = "MRZ_RESULT";
-    DisposableObserver<MrzRecord> observer ;
+    private  DisposableObserver<MrzRecord> observer ;
 
-    ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(
+    private  ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             new ActivityResultCallback<ActivityResult>() {
                 @Override
