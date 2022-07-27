@@ -47,7 +47,11 @@ public class MainActivity extends AppCompatActivity {
                         observer = RxBus.getRecord().subscribeWith(new DisposableObserver<MrzRecord>() {
                             @Override
                             public void onNext(@io.reactivex.rxjava3.annotations.NonNull MrzRecord mrzRecord) {
-//                            MrzRecord mrzInfo = (MrzRecord) data.getSerializableExtra(MRZ_RESULT);
+                                /**
+                                 * This code should be replaced with targeted UI Component to show the MRZ Result Data
+                                 * NOTE: for showing Picture of person and passport image you should subscribe to FaceDetectorHelper class Observer
+                                 * such as the example in MRZInfoFragment class
+                                 */
                                 if (mrzRecord != null) {
                                     FragmentContainerView container = findViewById(R.id.fragment_container_view);
                                     container.setVisibility(View.VISIBLE);
@@ -59,8 +63,10 @@ public class MainActivity extends AppCompatActivity {
                             }
                             @Override
                             public void onError(@io.reactivex.rxjava3.annotations.NonNull Throwable e) {
-                                // Camera Process Finished with failed detecting MRZ code
-                                // handling it depending on situation
+                                /**
+                                 * Camera Process Finished with failed detecting MRZ code
+                                 * handling it depending on situation
+                                 */
                             }
                             @Override
                             public void onComplete() {
@@ -115,7 +121,6 @@ public class MainActivity extends AppCompatActivity {
                     Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
                     Uri uri = Uri.fromParts("package", getPackageName(), null);
                     intent.setData(uri);
-//                    startActivityForResult(intent, APP_SETTINGS_ACTIVITY_REQUEST_CODE);
                     activityResultLauncher.launch(intent);
                 } else {
                     requestPermissionForCamera();
@@ -131,7 +136,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        // observer must be  disposed after activity state changed to stop to destroyed
+        /**
+         * Observer must be  disposed after activity state changed to stop to destroyed
+          */
         if (observer!=null)
         observer.dispose();
     }

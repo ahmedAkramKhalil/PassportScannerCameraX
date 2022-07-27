@@ -19,7 +19,7 @@ import com.foo.ocr.ml.FaceDetectorHelper;
 import com.foo.ocr.model.PassportDetails;
 import com.foo.ocr.mrzdecoder.MrzRecord;
 
-import io.reactivex.rxjava3.core.Scheduler;
+
 import io.reactivex.rxjava3.observers.DisposableObserver;
 
 public class MRZInfoFragment extends Fragment {
@@ -46,8 +46,6 @@ public class MRZInfoFragment extends Fragment {
     }
 
     MrzRecord mrzInfo;
-    TextView name, gName, documentNumber, issuingCountry, nationality, dateOfBirth, gender, expirationDate, others;
-    CheckBox documentCH, birthCH, expirationCH;
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -56,23 +54,23 @@ public class MRZInfoFragment extends Fragment {
             binding.setMrzRecord(mrzInfo);
 
         }
+        /**
+         * Subscribing to FaceDetectorHelper Observer to get notified when face Image is ready and passport image is correctly captured and ready.
+         */
         FaceDetectorHelper.getFaceDetectorObserver()
                 .subscribeWith(new DisposableObserver<PassportDetails>() {
                     @Override
                     public void onNext(@io.reactivex.rxjava3.annotations.NonNull PassportDetails passportDetails) {
-
                         binding.personPicture.setImageBitmap(passportDetails.getPersonalPicture());
                         binding.fullPicture.setImageBitmap(passportDetails.getPassportPhoto());
                     }
 
                     @Override
                     public void onError(@io.reactivex.rxjava3.annotations.NonNull Throwable e) {
-
                     }
 
                     @Override
                     public void onComplete() {
-
                     }
                 });
     }

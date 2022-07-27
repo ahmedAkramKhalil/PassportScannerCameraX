@@ -47,24 +47,23 @@ public class ObjectDetectorHelper {
                  * To Optimize selecting Passport object in image, You Should loop on detected objects and get area of
                  * each one, then compare it with camera overlay and get the nearest area as Passport object.
                  */
-
+                MlBitmap mlBitmap ;
                 if (detectedObjects.size()>0) {
                     Rect boundingBox = detectedObjects.get(0).getBoundingBox();
                     Bitmap bitmap = inputImage.getBitmapInternal();
                     Bitmap m = ImageUtil.cropImage(bitmap, new Size(bitmap.getWidth(), bitmap.getHeight()), boundingBox);
-                    MlBitmap mlBitmap = new MlBitmap(m, imageProxy.getImageInfo().getRotationDegrees());
+                    mlBitmap = new MlBitmap(m, imageProxy.getImageInfo().getRotationDegrees());
                     mlBitmap.setBitmapDetectedByObjectDetector(true);
-                    FaceDetectorHelper.getObjectObservable(mlBitmap)
-                            .observeOn(Schedulers.newThread())
-                            .subscribe();
 
                 }else {
-                    MlBitmap mlBitmap = new MlBitmap(bitmap, imageProxy.getImageInfo().getRotationDegrees());
+                    mlBitmap = new MlBitmap(bitmap, imageProxy.getImageInfo().getRotationDegrees());
+                    mlBitmap.setBitmapDetectedByObjectDetector(false);
 
-                    FaceDetectorHelper.getObjectObservable(mlBitmap)
-                            .observeOn(Schedulers.newThread())
-                            .subscribe();
                 }
+                FaceDetectorHelper.getObjectObservable(mlBitmap)
+                        .observeOn(Schedulers.newThread())
+                        .subscribe();
+
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override

@@ -37,7 +37,6 @@ public class TextRecognitionProcessor implements VisionImageProcessor {
     public static final String PASSPORT_REGEX_LINE_ONE = "P<(?<country>\\w{3})(?<lname>[A-Z]+)(<(?<lname2>[A-Z]+))?<<(?<fname>[A-Z]+)<(?<mname1>[A-Z]+)?<(?<mname2>[A-Z]+)?<(?<mname3>[A-Z]+)?";
     public static final String PASSPORT_REGEX_LINE_TWO = "([A-Z0-9<]{9})([0-9]{1})([A-Z]{3})([0-9]{6})([0-9]{1})([M|F|X|<]{1})([0-9]{6})([0-9]{1})([A-Z0-9<]{14})([0-9<]{1})([0-9]{1})";
 
-
     /**
       TODO#:
        Detect first image with success MRZ

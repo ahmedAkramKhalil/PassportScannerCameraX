@@ -73,6 +73,7 @@ public class CaptureActivity extends AppCompatActivity implements TextRecognitio
          * and the second is to locate the passport based on Machine leaning kit to identify objects,
          * and it was suggested to combine the two mechanisms to improve performance.
          */
+
         // Cropping the captured image on the borders of the Overlay on the screen
         ImageInfo imageInfo = image.getImageInfo();
         Bitmap bitmap = cropBitmapToAFrame(

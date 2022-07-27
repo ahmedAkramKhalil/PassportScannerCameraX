@@ -54,7 +54,7 @@ public class ImageUtil {
      * cropImageWithBounder used to crop face image in passport document
      */
     public static Bitmap cropImageWithBoundary(Bitmap fullImage, Size previewSize, Rect cardFinder, boolean higherBoundary) {
-        Rect rect = new Rect((int) (cardFinder.left / 1.55), (int) (cardFinder.top / (higherBoundary ? 1.09 : 1.25)), (int) (cardFinder.right * 1.25), (int) (cardFinder.bottom * (higherBoundary ? 1.06 : 1.1)));
+        Rect rect = new Rect((int) (cardFinder.left / 1.55), (int) (cardFinder.top / (higherBoundary ? 1.09 : 1.45)), (int) (cardFinder.right * 1.25), (int) (cardFinder.bottom * (higherBoundary ? 1.06 : 1.15)));
 
         cardFinder = rect;
         Rect scaledPreviewImage = scaleAndCenterWithin(previewSize, fullImage.getWidth(), fullImage.getHeight());
