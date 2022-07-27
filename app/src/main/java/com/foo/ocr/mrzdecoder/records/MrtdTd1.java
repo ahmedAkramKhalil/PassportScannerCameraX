@@ -1,21 +1,4 @@
-/**
- * Java parser for the MRZ records, as specified by the ICAO organization.
- * Copyright (C) 2011 Innovatrics s.r.o.
- * 
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- * 
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- * 
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
- */
+
 package com.foo.ocr.mrzdecoder.records;
 
 import com.foo.ocr.mrzdecoder.MrzParser;
@@ -23,9 +6,8 @@ import com.foo.ocr.mrzdecoder.MrzRange;
 import com.foo.ocr.mrzdecoder.MrzRecord;
 import com.foo.ocr.mrzdecoder.types.MrzFormat;
 
-/**
+/***
  * MRTD TD1 format: A three line long, 30 characters per line format.
- * @author Martin Vysny
  */
 public class MrtdTd1 extends MrzRecord {
     private static final long serialVersionUID = 1L;
@@ -33,14 +15,14 @@ public class MrtdTd1 extends MrzRecord {
     public MrtdTd1() {
         super(MrzFormat.MRTD_TD1);
     }
-    /**
+    /***
      * Optional data at the discretion
     of the issuing State. May contain
     an extended document number
     as per 6.7, note (j).
      */
     public String optional;
-    /**
+    /***
      * optional (for U.S. passport holders, 21-29 may be corresponding passport number)
      */
     public String optional2;

@@ -1,21 +1,4 @@
-/**
- * Java parser for the MRZ records, as specified by the ICAO organization.
- * Copyright (C) 2011 Innovatrics s.r.o.
- * 
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- * 
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- * 
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
- */
+
 package com.foo.ocr.mrzdecoder.records;
 
 import com.foo.ocr.mrzdecoder.MrzParser;
@@ -24,9 +7,8 @@ import com.foo.ocr.mrzdecoder.MrzRecord;
 import com.foo.ocr.mrzdecoder.types.MrzDocumentCode;
 import com.foo.ocr.mrzdecoder.types.MrzFormat;
 
-/**
+/***
  * MRV type-B format: A two lines long, 36 characters per line format
- * @author Jeremy Le Berre
  */
 public class MrvB extends MrzRecord {
 
@@ -38,7 +20,7 @@ public class MrvB extends MrzRecord {
         code2 = '<';
         code = MrzDocumentCode.TypeV;
     }
-    /**
+    /***
      * Optional data at the discretion of the issuing State
      */
     public String optional;

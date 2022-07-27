@@ -1,21 +1,4 @@
-/**
- * Java parser for the MRZ records, as specified by the ICAO organization.
- * Copyright (C) 2011 Innovatrics s.r.o.
- * 
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- * 
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- * 
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
- */
+
 package com.foo.ocr.mrzdecoder;
 
 
@@ -28,28 +11,27 @@ import java.text.Normalizer;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
+/***
  * Parses the MRZ records.
  * <p/>
  * All parse methods throws {@link MrzParseException} unless stated otherwise.
- * @author Martin Vysny
  */
 public class MrzParser {
 
-    /**
+    /***
      * The MRZ record, not null.
      */
     public final String mrz;
-    /**
+    /***
      * The MRZ record separated into rows.
      */
     public final String[] rows;
-    /**
+    /***
      * MRZ record format.
      */
     public final MrzFormat format;
 
-    /**
+    /***
      * Creates new parser which parses given MRZ record.
      * @param mrz the MRZ record, not null.
      */
@@ -59,7 +41,7 @@ public class MrzParser {
         this.format = MrzFormat.get(mrz);
     }
 
-    /**
+    /***
      * @author jllarraz@github
      * Parses the MRZ name in form of SURNAME<<FIRSTNAME<
      * @Param range the range
@@ -86,7 +68,7 @@ public class MrzParser {
         return new String[]{surname, givenNames};
     }
 
-    /**
+    /***
      * Returns a raw MRZ value from given range. If multiple ranges are specified, the value is concatenated.
      * @param range the ranges, not null.
      * @return raw value, never null, may be empty.
@@ -99,7 +81,7 @@ public class MrzParser {
         return sb.toString();
     }
 
-    /**
+    /***
      * Checks that given range contains valid characters.
      * @param range the range to check.
      */
@@ -113,7 +95,7 @@ public class MrzParser {
         }
     }
 
-    /**
+    /***
      * Parses a string in given range. &lt;&lt; are replaced with ", ", &lt; is replaced by space.
      * @param range the range
      * @return parsed string.
@@ -127,7 +109,7 @@ public class MrzParser {
         return str.replace("" + FILLER + FILLER, ", ").replace(FILLER, ' ');
     }
 
-    /**
+    /***
      * Verifies the check digit.
      * @param col the 0-based column of the check digit.
      * @param row the 0-based column of the check digit.
@@ -139,7 +121,7 @@ public class MrzParser {
         return checkDigit(col, row, rawValue(strRange), fieldName);
     }
 
-    /**
+    /***
      * Verifies the check digit.
      * @param col the 0-based column of the check digit.
      * @param row the 0-based column of the check digit.
@@ -149,7 +131,7 @@ public class MrzParser {
      */
     public boolean checkDigit(int col, int row, String str, String fieldName) {
 
-        /**
+        /***
          * If the check digit validation fails, this will contain the location.
          */
         MrzRange invalidCheckdigit = null;
@@ -168,7 +150,7 @@ public class MrzParser {
 
 //    private static Logger log = LoggerFactory.getLogger(MrzParser.class);
 
-    /**
+    /***
      * Parses MRZ date.
      * @param range the range containing the date, in the YYMMDD format. The range must be 6 characters long.
      * @return parsed date
@@ -216,7 +198,7 @@ public class MrzParser {
 
     }
 
-    /**
+    /***
      * Parses the "sex" value from given column/row.
      * @param col the 0-based column
      * @param row the 0-based row
@@ -227,7 +209,7 @@ public class MrzParser {
     }
     private static final int[] MRZ_WEIGHTS = new int[]{7, 3, 1};
 
-    /**
+    /***
      * Checks if given character is valid in MRZ.
      * @param c the character.
      * @return true if the character is valid, false otherwise.
@@ -249,7 +231,7 @@ public class MrzParser {
         throw new RuntimeException("Invalid character in MRZ record: " + c);
     }
 
-    /**
+    /***
      * Computes MRZ check digit for given string of characters.
      * @param str the string
      * @return check digit in range of 0..9, inclusive. See <a href="http://www2.icao.int/en/MRTD/Downloads/Doc%209303/Doc%209303%20English/Doc%209303%20Part%203%20Vol%201.pdf">MRTD documentation</a> part 15 for details.
@@ -262,7 +244,7 @@ public class MrzParser {
         return result % 10;
     }
 
-    /**
+    /***
      * Computes MRZ check digit for given string of characters.
      * @param str the string
      * @return check digit in range of 0..9, inclusive. See <a href="http://www2.icao.int/en/MRTD/Downloads/Doc%209303/Doc%209303%20English/Doc%209303%20Part%203%20Vol%201.pdf">MRTD documentation</a> part 15 for details.
@@ -271,7 +253,7 @@ public class MrzParser {
         return (char) ('0' + computeCheckDigit(str));
     }
 
-    /**
+    /***
      * Factory method, which parses the MRZ and returns appropriate record class.
      * @param mrz MRZ to parse.
      * @return record class.
@@ -307,7 +289,7 @@ public class MrzParser {
         EXPAND_CHARACTERS.put("\u00FE", "th"); // þ
     }
 
-    /**
+    /***
      * Converts given string to a MRZ string: removes all accents, converts the string to upper-case and replaces all spaces and invalid characters with '&lt;'.
      * <p/>
      * Several characters are expanded:
@@ -363,7 +345,7 @@ public class MrzParser {
         return str == null || str.trim().length() == 0;
     }
 
-    /**
+    /***
      * Converts a surname and given names to a MRZ string, shortening them as per Doc 9303 Part 3 Vol 1 Section 6.7 of the MRZ specification when necessary.
      * @param surname the surname, not blank.
      * @param givenNames given names, not blank.
@@ -414,7 +396,7 @@ public class MrzParser {
         }
         return toMrz(toName(surnames, given), length);
     }
-    /**
+    /***
      * The filler character, '&lt;'.
      */
     public static final char FILLER = '<';
