@@ -9,6 +9,10 @@ import com.foo.ocr.mrzdecoder.types.MrzFormat;
 import com.foo.ocr.mrzdecoder.types.MrzSex;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 /***
  * An abstract MRZ record, contains basic information present in all MRZ record types.
@@ -104,6 +108,25 @@ public abstract class MrzRecord implements Serializable {
                 + ", surname=" + surname + ", givenNames=" + givenNames + ", dateOfBirth=" + dateOfBirth + ", sex=" + sex + ", expirationDate="
                 + expirationDate + ", nationality=" + nationality + '}';
     }
+    public List<MRZItem> toList() {
+
+        List<MRZItem> items = new ArrayList<>();
+        items.add(new MRZItem("documentNumber",documentNumber));
+        items.add(new MRZItem("surname",surname));
+        items.add(new MRZItem("givenNames",givenNames));
+        items.add(new MRZItem("dateOfBirth",dateOfBirth.toString()));
+        items.add(new MRZItem("sex",sex.name()));
+        items.add(new MRZItem("nationality",nationality));
+        items.add(new MRZItem("expirationDate",expirationDate.toString()));
+        items.add(new MRZItem("validDocumentNumber",validDocumentNumber + ""));
+        items.add(new MRZItem("validDateOfBirth",validDateOfBirth+ ""));
+        items.add(new MRZItem("validExpirationDate",validExpirationDate+ ""));
+        items.add(new MRZItem("validComposite",validComposite+ ""));
+        return items;
+
+    }
+
+
 
     /***
      * Parses the MRZ record.
@@ -134,4 +157,6 @@ public abstract class MrzRecord implements Serializable {
      * @return a valid MRZ record, not null, separated by \n
      */
     public abstract String toMrz();
+
+
 }

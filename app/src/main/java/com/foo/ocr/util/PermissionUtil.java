@@ -25,7 +25,7 @@ public class PermissionUtil {
     public static boolean showRationale(Activity activity, String permission) {
         if (activity != null && permission != null) {
             return ActivityCompat.shouldShowRequestPermissionRationale(activity, permission);
-        }
+        } //
         return true;
     }
 }

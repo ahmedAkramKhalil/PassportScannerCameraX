@@ -5,10 +5,24 @@
       <map>
         <entry key="../../../../layout/custom_preview.xml" value="0.1" />
         <entry key="app/src/main/res/drawable-v24/border_background.xml" value="0.1" />
-        <entry key="app/src/main/res/layout/activity_capture.xml" value="0.25" />
+        <entry key="app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/frg_background.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/ic_dashboard_black_24dp.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/ic_home_black_24dp.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/ic_launcher_background.xml" value="0.239" />
+        <entry key="app/src/main/res/drawable/ic_notifications_black_24dp.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/activity_capture.xml" value="0.25761772853185594" />
         <entry key="app/src/main/res/layout/activity_capture2.xml" value="0.23229166666666667" />
-        <entry key="app/src/main/res/layout/activity_main.xml" value="0.45" />
-        <entry key="app/src/main/res/layout/fragment_mrz_info.xml" value="0.45" />
+        <entry key="app/src/main/res/layout/activity_main.xml" value="0.28254847645429365" />
+        <entry key="app/src/main/res/layout/activity_main2.xml" value="0.18072916666666666" />
+        <entry key="app/src/main/res/layout/content_activity.xml" value="0.358695652173913" />
+        <entry key="app/src/main/res/layout/fragment_camera.xml" value="0.38269927536231885" />
+        <entry key="app/src/main/res/layout/fragment_dashboard.xml" value="0.358695652173913" />
+        <entry key="app/src/main/res/layout/fragment_home.xml" value="0.24031007751937986" />
+        <entry key="app/src/main/res/layout/fragment_item.xml" value="0.358695652173913" />
+        <entry key="app/src/main/res/layout/fragment_item_list.xml" value="0.358695652173913" />
+        <entry key="app/src/main/res/layout/fragment_mrz_info.xml" value="0.20987654320987653" />
+        <entry key="app/src/main/res/layout/list_item.xml" value="0.24031007751937986" />
       </map>
     </option>
   </component>
