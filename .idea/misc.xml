@@ -11,7 +11,8 @@
         <entry key="app/src/main/res/drawable/ic_home_black_24dp.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/ic_launcher_background.xml" value="0.239" />
         <entry key="app/src/main/res/drawable/ic_notifications_black_24dp.xml" value="0.1" />
-        <entry key="app/src/main/res/layout/activity_capture.xml" value="0.25761772853185594" />
+        <entry key="app/src/main/res/drawable/progress_dialog.xml" value="0.239" />
+        <entry key="app/src/main/res/layout/activity_capture.xml" value="0.24872448979591838" />
         <entry key="app/src/main/res/layout/activity_capture2.xml" value="0.23229166666666667" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.28254847645429365" />
         <entry key="app/src/main/res/layout/activity_main2.xml" value="0.18072916666666666" />

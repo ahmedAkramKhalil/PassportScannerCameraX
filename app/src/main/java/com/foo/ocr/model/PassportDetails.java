@@ -1,14 +1,11 @@
 package com.foo.ocr.model;
 
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.foo.ocr.mrzdecoder.MrzRecord;
-import com.foo.ocr.util.ImageUtil;
-
-import java.io.Serializable;
+import com.foo.ocr.util.BitmapUtil;
 
 public class PassportDetails implements Parcelable {
     private  MrzRecord mrzRecord;
@@ -61,7 +58,7 @@ public class PassportDetails implements Parcelable {
 
     public void setPersonalPicture(Bitmap personalPicture) {
 
-        this.personalPicture = ImageUtil.compressBitmap(personalPicture);
+        this.personalPicture = BitmapUtil.compressBitmap(personalPicture);
     }
 
     public Bitmap getPassportPhoto() {
@@ -69,7 +66,7 @@ public class PassportDetails implements Parcelable {
     }
 
     public void setPassportPhoto(Bitmap passportPhoto) {
-        this.passportPhoto = ImageUtil.compressBitmap(passportPhoto);
+        this.passportPhoto = BitmapUtil.compressBitmap(passportPhoto);
     }
 
     @Override

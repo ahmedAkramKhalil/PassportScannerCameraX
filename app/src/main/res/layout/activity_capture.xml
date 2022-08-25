@@ -20,10 +20,21 @@
 
     </androidx.camera.view.PreviewView>
 
+    <Switch
+        android:id="@+id/flash_switch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Flash off"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="24dp"
+        />
+
     <View
         android:id="@+id/overlay_view"
-        android:layout_width="match_parent"
-        android:layout_height="65dp"
+        android:layout_width="0dp"
+        android:layout_height="60dp"
         android:layout_marginStart="25dp"
         android:layout_marginEnd="25dp"
 
@@ -36,12 +47,11 @@
 
     <View
         android:id="@+id/view"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="250dp"
-        android:layout_marginStart="15dp"
-        android:layout_marginEnd="15dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
         android:background="@drawable/border_background"
-
         android:backgroundTint="#8F009688"
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="@+id/overlay_view"
@@ -60,13 +70,25 @@
 
         >
 
-        <ImageView
-            android:id="@+id/captured"
-            android:layout_width="match_parent"
-            android:layout_height="270dp"
+        <ProgressBar
+            android:id="@+id/progress_loader"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
             android:layout_gravity="center"
-            android:layout_margin="5dp"
-            android:visibility="visible" />
+            android:visibility="invisible" />
+
+        <TextView
+            android:id="@+id/loading_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="40dp"
+            android:text="@string/mrz_detected"
+            android:textColor="#FFFFFF"
+            android:textSize="16dp"
+            android:visibility="invisible" />
 
     </FrameLayout>
 

@@ -40,7 +40,6 @@ public class MrzParser {
         this.rows = mrz.split("\n");
         this.format = MrzFormat.get(mrz);
     }
-
     /***
      * @author jllarraz@github
      * Parses the MRZ name in form of SURNAME<<FIRSTNAME<

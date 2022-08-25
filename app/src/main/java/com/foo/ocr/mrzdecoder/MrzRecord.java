@@ -109,21 +109,19 @@ public abstract class MrzRecord implements Serializable {
                 + expirationDate + ", nationality=" + nationality + '}';
     }
     public List<MRZItem> toList() {
-
         List<MRZItem> items = new ArrayList<>();
-        items.add(new MRZItem("documentNumber",documentNumber));
-        items.add(new MRZItem("surname",surname));
-        items.add(new MRZItem("givenNames",givenNames));
-        items.add(new MRZItem("dateOfBirth",dateOfBirth.toString()));
-        items.add(new MRZItem("sex",sex.name()));
-        items.add(new MRZItem("nationality",nationality));
-        items.add(new MRZItem("expirationDate",expirationDate.toString()));
-        items.add(new MRZItem("validDocumentNumber",validDocumentNumber + ""));
-        items.add(new MRZItem("validDateOfBirth",validDateOfBirth+ ""));
-        items.add(new MRZItem("validExpirationDate",validExpirationDate+ ""));
-        items.add(new MRZItem("validComposite",validComposite+ ""));
+        items.add(new MRZItem("Document Number",documentNumber));
+        items.add(new MRZItem("Surname",surname));
+        items.add(new MRZItem("Given Names",givenNames));
+        items.add(new MRZItem("Date Of Birth",dateOfBirth.toString()));
+        items.add(new MRZItem("Sex",sex.name()));
+        items.add(new MRZItem("Nationality",nationality));
+        items.add(new MRZItem("Expiration Date",expirationDate.toString()));
+        items.add(new MRZItem("Valid Document Number",validDocumentNumber + ""));
+        items.add(new MRZItem("Valid Date Of Birth",validDateOfBirth+ ""));
+        items.add(new MRZItem("Valid Expiration Date",validExpirationDate+ ""));
+        items.add(new MRZItem("Valid Composite",validComposite+ ""));
         return items;
-
     }
 
 

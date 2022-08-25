@@ -26,4 +26,7 @@
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
+    <string name="mrz_detected">MRZ detected ...</string>
+    <string name="process_failed">Process Failed please try again</string>
+    <string name="processing">Processing...</string>
 </resources>

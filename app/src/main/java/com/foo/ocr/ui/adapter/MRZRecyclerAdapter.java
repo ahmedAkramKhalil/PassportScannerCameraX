@@ -1,4 +1,4 @@
-package com.foo.ocr;
+package com.foo.ocr.ui.adapter;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -7,11 +7,10 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.foo.ocr.R;
 import com.foo.ocr.mrzdecoder.MRZItem;
-import com.foo.ocr.mrzdecoder.MrzRecord;
 
 import java.util.List;
-import java.util.SortedMap;
 
 public class MRZRecyclerAdapter extends RecyclerView.Adapter<MRZRecyclerAdapter.ViewHolder>{
 

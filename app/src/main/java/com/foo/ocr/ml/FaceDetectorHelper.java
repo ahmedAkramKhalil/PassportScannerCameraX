@@ -1,4 +1,7 @@
 package com.foo.ocr.ml;
+import static com.foo.ocr.util.BitmapUtil.cropPreviewBitmapWidth;
+
+import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -10,14 +13,16 @@ import android.graphics.RectF;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 
 import com.foo.ocr.StateLiveData;
 import com.foo.ocr.model.PassportDetails;
-import com.foo.ocr.util.ImageUtil;
+import com.foo.ocr.util.BitmapUtil;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -61,8 +66,7 @@ public class FaceDetectorHelper {
      ExecutorService mExecutor = Executors.newSingleThreadExecutor();
     Handler mHandler = new Handler(Looper.getMainLooper());
 
-
-    public  StateLiveData<PassportDetails> detectFaces(InputImage image) {
+    public  StateLiveData<PassportDetails> detectFaces(InputImage image, DisplayMetrics metrics) {
         passportDetailsMutableLiveData  = new StateLiveData<>() ;
 //      Runnable backgroundThread =   new Runnable(){
 //            @Override
@@ -71,8 +75,8 @@ public class FaceDetectorHelper {
                 FaceDetectorOptions options =
                         new FaceDetectorOptions.Builder()
                                 .setPerformanceMode(FaceDetectorOptions.PERFORMANCE_MODE_ACCURATE)
-                                .setMinFaceSize(0.01f)
-                                .enableTracking()
+//                                .setMinFaceSize(0.01f)
+//                                .enableTracking()
                                 .build();
                 // [END set_detector_options]
                 // [START get_detector]
@@ -90,16 +94,24 @@ public class FaceDetectorHelper {
                                             public void onSuccess(List<Face> faces) {
                                                 Log.d("LOOG", "StateLiveData<PassportDetails> onSuccess");
                                                 if (!faces.isEmpty()) {
-                                                    Log.d("LOOG", "StateLiveData<PassportDetails> isEmpty");
+                                                    Log.d("LOOG", "StateLiveData<PassportDetails> isNotEmpty");
 
                                                     Bitmap map = draw(faces, image);
+//                                                    Bitmap bitmap = cropPreviewBitmapWidth(
+//                                                            image.getBitmapInternal(),
+//                                                            metrics);
+
+
                                                     PassportDetails passportDetails = new PassportDetails(map, image.getBitmapInternal());
 //                                            iFaceDetectorResultListeners.forEach(l -> l.onFaceDetected(passportDetails));
 //                                            passportDetailsMutableLiveData.postValue(passportDetails);
                                                     passportDetailsMutableLiveData.postSuccess(passportDetails);
 //                                                    passportDetailsMutableLiveData.postComplete();
                                                 } else {
+                                                    Log.d("FAIL","Face detection failed " +" NO FACE");
+
                                                     // Handel detection failure
+                                                    passportDetailsMutableLiveData.postLoading();
 //                                                    passportDetailsMutableLiveData.postError(new Exception("No Face Detected"));
 //                                            iFaceDetectorResultListeners.forEach(l -> l.onFaceDetectionFailed(new Exception("No Face Detected")));
                                                 }
@@ -112,6 +124,7 @@ public class FaceDetectorHelper {
                                             @Override
                                             public void onFailure(@NonNull Exception e) {
                                                 // should handle face detection fail
+                                                Log.d("FAIL","Face detection failed " + e.getMessage());
                                                 passportDetailsMutableLiveData.postError(e);
                                             }
                                         });
@@ -140,14 +153,15 @@ public class FaceDetectorHelper {
         polyPaint.setAntiAlias(true);
         Face face = faces.get(0);
         RectF rect;
+
 //        Rect rect;
 
-        rect = expandFaceRect(face.getBoundingBox(),  0.05f,  0.2f,  0.05f,  0.05f);
+        rect = expandFaceRect(face.getBoundingBox(),  0.06f,  0.05f,  0.05f,  0.04f);
 //        rect = expandFaceRect(face.getBoundingBox(), isRotated ? 0f : 0.2f, isRotated ? 0.2f : 0.2f, isRotated ? 0f : 0.1f, isRotated ? 0.1f : 0.1f);
 //        rect = face.getBoundingBox();
         canvas.drawRect(rect, polyPaint);
         canvas.drawBitmap(bitmap2, 0, 0, paint);
-        return ImageUtil.createBitmap(resultingImage, (int) (rect.left < 0 ? 0 : rect.left), (int) (rect.top < 0 ? 0 : rect.top), (int) rect.width(), (int) rect.height());
+        return BitmapUtil.createBitmap(resultingImage, (int) (rect.left < 0 ? 0 : rect.left), (int) (rect.top < 0 ? 0 : rect.top), (int) rect.width(), (int) rect.height());
     }
 
 
@@ -167,6 +181,7 @@ public class FaceDetectorHelper {
         linePaint.setStyle(Paint.Style.STROKE);
         linePaint.setStrokeWidth(2f);
     }
+
 
     static RectF expandFaceRect(Rect rect, float leftR, float topR, float rightR, float bottomR) {
         return new RectF((rect.left - rect.left * leftR), (rect.top - rect.top * topR), (rect.right + rect.right * rightR), (rect.bottom + rect.bottom * bottomR));
