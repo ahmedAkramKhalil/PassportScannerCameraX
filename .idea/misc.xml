@@ -24,6 +24,7 @@
         <entry key="app/src/main/res/layout/fragment_item_list.xml" value="0.358695652173913" />
         <entry key="app/src/main/res/layout/fragment_mrz_info.xml" value="0.20987654320987653" />
         <entry key="app/src/main/res/layout/list_item.xml" value="0.24031007751937986" />
+        <entry key="app/src/main/res/layout/progress_dialog.xml" value="0.358695652173913" />
       </map>
     </option>
   </component>

@@ -29,4 +29,8 @@
     <string name="mrz_detected">MRZ detected ...</string>
     <string name="process_failed">Process Failed please try again</string>
     <string name="processing">Processing...</string>
+    <string name="flash_on">Flash ON</string>
+    <string name="flash_off">Flash OFF</string>
+    <string name="failed_to_passport_detailes">Failed to detect passport detailes,please try again</string>
+    <string name="loading">Loading</string>
 </resources>

@@ -12,6 +12,7 @@ import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentContainerView;
 import androidx.fragment.app.FragmentTransaction;
+
 import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
@@ -24,34 +25,31 @@ import android.widget.Toast;
 
 import com.foo.ocr.databinding.ActivityMainBinding;
 import com.foo.ocr.ui.fragment.DetailsFragment;
-import com.foo.ocr.util.AppUtil;
-import com.foo.ocr.util.PermissionUtil;
+import com.foo.ocr.mrzscanner.util.AppUtil;
+import com.foo.ocr.mrzscanner.util.PermissionUtil;
 import com.foo.ocr.R;
 
 public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding binding;
-
     private ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             new ActivityResultCallback<ActivityResult>() {
                 @Override
                 public void onActivityResult(ActivityResult result) {
                     if (result.getResultCode() == Activity.RESULT_OK) {
-                                    FragmentContainerView container = findViewById(R.id.fragment_container_view);
-                                    container.setVisibility(View.VISIBLE);
-                                    FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                                    Fragment f = new DetailsFragment();
-                                    ft.replace(R.id.fragment_container_view, f);
-                                    ft.commit();
-
-                    }else if (result.getResultCode() == Activity.RESULT_CANCELED){
-                        Toast.makeText(getApplicationContext(),getResources().getText(R.string.process_failed).toString(),Toast.LENGTH_LONG).show();
+                        FragmentContainerView container = findViewById(R.id.fragment_container_view);
+                        container.setVisibility(View.VISIBLE);
+                        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                        Fragment f = new DetailsFragment();
+                        ft.replace(R.id.fragment_container_view, f);
+                        ft.commit();
+                    } else if (result.getResultCode() == Activity.RESULT_CANCELED) {
+                        Toast.makeText(getApplicationContext(), getResources().getText(R.string.process_failed).toString(), Toast.LENGTH_LONG).show();
                     }
                 }
             }
     );
-
 
 
     @Override
@@ -64,13 +62,10 @@ public class MainActivity extends AppCompatActivity {
                 requestPermissionForCamera();
             }
         });
-
-
     }
 
 
-
-    void openCameraActivity() {
+    private void openCameraActivity() {
         Intent intent = new Intent(MainActivity.this, CaptureActivity.class);
         activityResultLauncher.launch(intent);
     }
@@ -87,7 +82,6 @@ public class MainActivity extends AppCompatActivity {
             openCameraActivity();
         }
     }
-
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -108,13 +102,6 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
-
-
-
-
-
-
-
 
 
 }

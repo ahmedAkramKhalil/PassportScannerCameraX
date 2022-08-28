@@ -8,13 +8,13 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.foo.ocr.R;
-import com.foo.ocr.mrzdecoder.MRZItem;
+import com.foo.ocr.mrzscanner.mrzdecoder.MRZItem;
 
 import java.util.List;
 
 public class MRZRecyclerAdapter extends RecyclerView.Adapter<MRZRecyclerAdapter.ViewHolder>{
 
-    List<MRZItem> listData;
+    private List<MRZItem> listData;
     public MRZRecyclerAdapter(List<MRZItem> dataMap) {
         this.listData = dataMap;
     }
